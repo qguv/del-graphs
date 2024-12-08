@@ -7,6 +7,7 @@ class Graph:
     agent_node_links: dict[str, dict[str, set[str]]]
     agent_colors: dict[str, str]
     realworld: str | None = None
+    clusters: dict[str, set['Graph']] | None = None
 
     @classmethod
     def from_graphviz(cls, f) -> 'Graph':
@@ -45,6 +46,12 @@ class Graph:
     def to_graphviz_lines(self):
         yield "digraph G {"
         yield "  edge[arrowsize=0.3];"
+        for event, nodes in (self.clusters or dict()).items():
+            yield ""
+            yield f"  subgraph cluster_{event} {{"
+            for node in nodes:
+                yield f"    {node};"
+            yield "  }"
         for agent, node_links in self.agent_node_links.items():
             yield ""
             yield "  edge["
@@ -65,10 +72,10 @@ class Graph:
     def to_graphviz(self) -> str:
         return "".join([line + '\n' for line in self.to_graphviz_lines()])
 
-
     def product(self, events: 'Graph', compat: dict) -> 'Graph':
         new_agent_node_links = dict()
         new_nodes = set()
+        clusters = dict()
         for agent, node_links in self.agent_node_links.items():
             new_agent_node_links[agent] = dict()
             for node_from, nodes_to in node_links.items():
@@ -83,15 +90,19 @@ class Graph:
                             if event_to in events.agent_node_links[agent][event_from]:
                                 new_node_from = node_from + event_from
                                 new_node_to = node_to + event_to
-                                new_nodes.add(new_node_from)
-                                new_nodes.add(new_node_to)
+                                for node, event in [(new_node_from, event_from), (new_node_to, event_to)]:
+                                    new_nodes.add(node)
+                                    try:
+                                        clusters[event].add(node)
+                                    except KeyError:
+                                        clusters[event] = {node,}
                                 try:
                                     new_agent_node_links[agent][new_node_from].add(new_node_to)
                                 except KeyError:
                                     new_agent_node_links[agent][new_node_from] = {new_node_to,}
                         except KeyError:
                             pass
-        return Graph(agent_node_links=new_agent_node_links, agent_colors=self.agent_colors, nodes=new_nodes)
+        return Graph(agent_node_links=new_agent_node_links, agent_colors=self.agent_colors, nodes=new_nodes, clusters=clusters)
 
 
 def parse_compatiblity(f) -> dict[str, str]:
