@@ -16,6 +16,8 @@ digraph G {
     fontcolor="#0074d9",
   ];
   H -> T[dir=both];
+  H -> H;
+  T -> T;
 
   edge[
     label="c",
@@ -23,6 +25,8 @@ digraph G {
     fontcolor="#8b41b1",
   ];
   H -> T[dir=both];
+  H -> H;
+  T -> T;
   
   edge[
     label="e",
@@ -30,4 +34,6 @@ digraph G {
     fontcolor="#646464",
   ];
   H -> T[dir=both];
+  H -> H;
+  T -> T;
 }
