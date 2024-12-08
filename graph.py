@@ -78,30 +78,36 @@ class Graph:
         clusters = dict()
         for agent, node_links in self.agent_node_links.items():
             new_agent_node_links[agent] = dict()
-            for node_from, nodes_to in node_links.items():
-                for node_to in nodes_to:
+            for old_node_from, old_nodes_to in node_links.items():
+                for old_node_to in old_nodes_to:
                     for event_from, events_to in events.agent_node_links[agent].items():
-                        if event_from not in compat[node_from]:
+
+                        # check from-event precondition
+                        if event_from not in compat[old_node_from]:
                             continue
+
                         for event_to in events_to:
-                            if event_to not in compat[node_to]:
+
+                            # check to-event precondition
+                            if event_to not in compat[old_node_to]:
                                 continue
-                        try:
-                            if event_to in events.agent_node_links[agent][event_from]:
-                                new_node_from = node_from + event_from
-                                new_node_to = node_to + event_to
-                                for node, event in [(new_node_from, event_from), (new_node_to, event_to)]:
-                                    new_nodes.add(node)
+
+                            try:
+                                if event_to in events.agent_node_links[agent][event_from]:
+                                    new_node_from = old_node_from + event_from
+                                    new_node_to = old_node_to + event_to
+                                    for node, event in [(new_node_from, event_from), (new_node_to, event_to)]:
+                                        new_nodes.add(node)
+                                        try:
+                                            clusters[event].add(node)
+                                        except KeyError:
+                                            clusters[event] = {node,}
                                     try:
-                                        clusters[event].add(node)
+                                        new_agent_node_links[agent][new_node_from].add(new_node_to)
                                     except KeyError:
-                                        clusters[event] = {node,}
-                                try:
-                                    new_agent_node_links[agent][new_node_from].add(new_node_to)
-                                except KeyError:
-                                    new_agent_node_links[agent][new_node_from] = {new_node_to,}
-                        except KeyError:
-                            pass
+                                        new_agent_node_links[agent][new_node_from] = {new_node_to,}
+                            except KeyError:
+                                pass
         return Graph(agent_node_links=new_agent_node_links, agent_colors=self.agent_colors, nodes=new_nodes, clusters=clusters)
 
 
