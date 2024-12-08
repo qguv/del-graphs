@@ -83,13 +83,13 @@ class Graph:
                     for event_from, events_to in events.agent_node_links[agent].items():
 
                         # check from-event precondition
-                        if event_from not in compat[old_node_from]:
+                        if event_from != 'true' and event_from not in compat.get(old_node_from, set()):
                             continue
 
                         for event_to in events_to:
 
                             # check to-event precondition
-                            if event_to not in compat[old_node_to]:
+                            if event_to != 'true' and event_to not in compat.get(old_node_to, set()):
                                 continue
 
                             try:
@@ -118,7 +118,6 @@ def parse_compatiblity(f) -> dict[str, str]:
         worlds, _, events = line.partition(' ')
         worlds = worlds.split(',')
         events = events.split(',')
-        events.append('true')
         for world in worlds:
             for event in events:
                 try:
