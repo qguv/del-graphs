@@ -46,11 +46,11 @@ class Graph:
     def to_graphviz_lines(self):
         yield "digraph G {"
         yield "  edge[arrowsize=0.3];"
-        for event, nodes in (self.clusters or dict()).items():
+        for event, worlds in (self.clusters or dict()).items():
             yield ""
             yield f"  subgraph cluster_{event} {{"
-            for node in nodes:
-                yield f"    {node};"
+            for world in worlds:
+                yield f"    {world};"
             yield "  }"
         for agent, node_links in self.agent_node_links.items():
             yield ""
@@ -73,42 +73,46 @@ class Graph:
         return "".join([line + '\n' for line in self.to_graphviz_lines()])
 
     def product(self, events: 'Graph', compat: dict) -> 'Graph':
-        new_agent_node_links = dict()
-        new_nodes = set()
+        new_agent_world_links = dict()
+        new_worlds = set()
         clusters = dict()
-        for agent, node_links in self.agent_node_links.items():
-            new_agent_node_links[agent] = dict()
-            for old_node_from, old_nodes_to in node_links.items():
-                for old_node_to in old_nodes_to:
+
+        for agent, old_world_links in self.agent_node_links.items():
+            new_world_links = dict()
+            new_agent_world_links[agent] = new_world_links
+
+            for old_world_from, old_worlds_to in old_world_links.items():
+                for old_world_to in old_worlds_to:
                     for event_from, events_to in events.agent_node_links[agent].items():
 
                         # check from-event precondition
-                        if event_from != 'true' and event_from not in compat.get(old_node_from, set()):
+                        if event_from != 'true' and event_from not in compat.get(old_world_from, set()):
                             continue
 
                         for event_to in events_to:
 
                             # check to-event precondition
-                            if event_to != 'true' and event_to not in compat.get(old_node_to, set()):
+                            if event_to != 'true' and event_to not in compat.get(old_world_to, set()):
                                 continue
 
+                            new_world_from = old_world_from + event_from
+                            new_world_to = old_world_to + event_to
+                            for world, event in [(new_world_from, event_from), (new_world_to, event_to)]:
+                                new_worlds.add(world)
+                                try:
+                                    clusters[event].add(world)
+                                except KeyError:
+                                    clusters[event] = {world,}
                             try:
-                                if event_to in events.agent_node_links[agent][event_from]:
-                                    new_node_from = old_node_from + event_from
-                                    new_node_to = old_node_to + event_to
-                                    for node, event in [(new_node_from, event_from), (new_node_to, event_to)]:
-                                        new_nodes.add(node)
-                                        try:
-                                            clusters[event].add(node)
-                                        except KeyError:
-                                            clusters[event] = {node,}
-                                    try:
-                                        new_agent_node_links[agent][new_node_from].add(new_node_to)
-                                    except KeyError:
-                                        new_agent_node_links[agent][new_node_from] = {new_node_to,}
+                                new_world_links[new_world_from].add(new_world_to)
                             except KeyError:
-                                pass
-        return Graph(agent_node_links=new_agent_node_links, agent_colors=self.agent_colors, nodes=new_nodes, clusters=clusters)
+                                new_world_links[new_world_from] = {new_world_to,}
+        return Graph(
+            agent_node_links=new_agent_world_links,
+            agent_colors=self.agent_colors,
+            nodes=new_worlds,
+            clusters=clusters,
+        )
 
 
 def parse_compatiblity(f) -> dict[str, str]:
