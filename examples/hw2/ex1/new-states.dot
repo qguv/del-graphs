@@ -1,0 +1,62 @@
+digraph G {
+  edge[arrowsize=0.3];
+
+  subgraph cluster_b {
+    rrb;
+  }
+
+  subgraph cluster_true {
+    wrtrue;
+    rwtrue;
+    rrtrue;
+  }
+
+  subgraph cluster_ab {
+    rrab;
+  }
+
+  subgraph cluster_a {
+    rra;
+  }
+
+  edge[
+    label="a",
+    color="#b60157",
+    fontcolor="#b60157",
+  ];
+  rrb -> wrtrue;
+  rrb -> rrtrue;
+  rrtrue -> wrtrue[dir=both];
+  rrtrue -> rrtrue;
+  rrab -> rra;
+  rra -> rra;
+  wrtrue -> wrtrue;
+  rwtrue -> rwtrue;
+
+  edge[
+    label="b",
+    color="#0074d9",
+    fontcolor="#0074d9",
+  ];
+  rra -> rrtrue;
+  rra -> rwtrue;
+  rrtrue -> rrtrue;
+  rrtrue -> rwtrue[dir=both];
+  rrab -> rrb;
+  rrb -> rrb;
+  rwtrue -> rwtrue;
+  wrtrue -> wrtrue;
+
+  edge[
+    label="q",
+    color="#8b41b1",
+    fontcolor="#8b41b1",
+  ];
+  rrab -> rrab;
+  rra -> rra;
+  rrb -> rrb;
+  rrtrue -> rrtrue;
+  rwtrue -> rwtrue;
+  wrtrue -> wrtrue;
+}
+

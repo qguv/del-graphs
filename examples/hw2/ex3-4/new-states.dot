@@ -1,0 +1,21 @@
+digraph G {
+  edge[arrowsize=0.3];
+
+  subgraph cluster_true {
+    ptrue;
+  }
+
+  subgraph cluster_not_s {
+    rnot_s;
+    qnot_s;
+  }
+
+  edge[
+    label="a",
+    color="#8b41b1",
+    fontcolor="#8b41b1",
+  ];
+  ptrue -> rnot_s;
+  ptrue -> qnot_s;
+}
+
