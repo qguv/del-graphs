@@ -1,0 +1,3 @@
+p not_s
+q not_s
+r not_s

@@ -1,0 +1,11 @@
+digraph G {
+  edge[arrowsize=0.3];
+  rankdir=LR
+  
+  edge[
+    label="a",
+    color="#8b41b1",
+    fontcolor="#8b41b1",
+  ];
+  true -> not_s;
+}

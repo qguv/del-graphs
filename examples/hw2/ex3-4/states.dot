@@ -1,0 +1,13 @@
+digraph G {
+  edge[arrowsize=0.3];
+
+  edge[
+    label="a",
+    color="#8b41b1",
+    fontcolor="#8b41b1",
+  ];
+  p -> q;
+  p -> r;
+  q -> s;
+  r -> s;
+}
