@@ -1,0 +1,33 @@
+digraph G {
+  rankdir=LR
+  edge[arrowsize=0.3];
+  
+  edge[
+    label="a",
+    color="#b60157",
+    fontcolor="#b60157",
+  ];
+  H -> H;
+  T -> T;
+
+  edge[
+    label="b",
+    color="#0074d9",
+    fontcolor="#0074d9",
+  ];
+  H -> T[dir=both];
+
+  edge[
+    label="c",
+    color="#8b41b1",
+    fontcolor="#8b41b1",
+  ];
+  H -> T[dir=both];
+  
+  edge[
+    label="e",
+    color="#646464",
+    fontcolor="#646464",
+  ];
+  H -> T[dir=both];
+}
