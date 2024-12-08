@@ -1,0 +1,32 @@
+    digraph G {
+      edge[arrowsize=0.3];
+
+      edge[
+        label="a",
+        color="#b60157",
+        fontcolor="#b60157",
+      ];
+      rr -> wr[dir=both];
+      rr -> rr;
+      wr -> wr;
+      rw -> rw;
+
+      edge[
+        label="b",
+        color="#0074d9",
+        fontcolor="#0074d9",
+      ];
+      rr -> rw[dir=both];
+      rr -> rr;
+      rw -> rw;
+      wr -> wr;
+
+      edge[
+        label="q",
+        color="#8b41b1",
+        fontcolor="#8b41b1",
+      ];
+      rr -> rr;
+      rw -> rw;
+      wr -> wr;
+    }
