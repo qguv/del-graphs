@@ -1,0 +1,43 @@
+digraph G {
+  edge[arrowsize=0.3];
+
+  edge[
+    label="a",
+    color="#b60157",
+    fontcolor="#b60157",
+  ];
+  e -> bc;
+  bc -> bc;
+  b -> b;
+  true -> true;
+
+  edge[
+    label="b",
+    color="#0074d9",
+    fontcolor="#0074d9",
+  ];
+  e -> true;
+  bc -> b;
+  b -> b;
+  true -> true;
+
+  edge[
+    label="c",
+    color="#8b41b1",
+    fontcolor="#8b41b1",
+  ];
+  e -> true;
+  bc -> bc;
+  b -> true;
+  true -> true;
+
+  edge[
+    label="e",
+    color="#646464",
+    fontcolor="#646464",
+  ];
+  e -> e;
+  bc -> true;
+  b -> true;
+  true -> true;
+}
