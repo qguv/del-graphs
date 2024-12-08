@@ -141,12 +141,5 @@ if __name__ == "__main__":
     states = Graph.from_graphviz(args.STATES[0])
     events = Graph.from_graphviz(args.EVENTS[0])
     compat = parse_compatiblity(args.COMPAT[0])
-    '''
-    from pprint import pprint
-    for model in (state_model, event_model):
-        pprint(model.agent_node_links)
-        print(model.to_graphviz())
-    pprint(compatibility)
-    '''
     new_states = states.product(events, compat)
     print(new_states.to_graphviz())
